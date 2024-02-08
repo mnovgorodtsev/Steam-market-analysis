@@ -72,8 +72,20 @@ def steamcharts_data(url):
             steamcharts_list.append(row)
 
     df = pd.DataFrame(steamcharts_list, columns=['Month', 'Players'])
-    return df
-URL="https://steamcharts.com/app/730"
+    df['Players'] = df['Players'].astype(float)
+    df['Players'] = (df['Players'] / 1000).round(2)
+    df = df.tail(-1)
+    df['Year'] = df['Month'].str.split().str[1]
+    df['Month'] = df['Month'].str.split().str[0]
+    df['Month'] = df['Month'].map(months_steamcharts)
+    df_reversed = df.iloc[::-1].reset_index(drop=True)
+    print(df_reversed)
+    return df_reversed
 
-df=steamcharts_data(URL)
+
+
+URL_steamcharts="https://steamcharts.com/app/730"
+df=steamcharts_data(URL_steamcharts)
 print(df)
+
+
